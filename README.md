@@ -2,6 +2,8 @@
 
 An advanced, premium-tier AI intelligence system that deploys a collaborative multi-agent team (**Researcher**, **Critic / Fact-Checker**, and **Writer**) to monitor market niches, crawl competitor updates, verify findings against a persistent local vector database using semantic cosine-similarity, and compile executive-ready briefings translating technical feature shifts into strategic business value.
 
+Supports **6 industry verticals** out-of-the-box — Fashion & Luxury, Automotive & EV, Finance & Fintech, Healthcare & Biotech, Software & AI, plus a Generic Corporate fallback — each with competitor-specific facts and tailored strategic recommendations.
+
 Features a responsive, **glassmorphism dark-space React dashboard** displaying a real-time animated SVG agent graph, streaming console logs, semantic vector searches, settings configuration, and an interactive markdown briefing viewer.
 
 ---
@@ -43,7 +45,7 @@ graph TD
 ### Backend (Python FastAPI)
 *   **Framework**: FastAPI & Uvicorn (High-performance async server hosting Server-Sent Events (SSE) streaming).
 *   **Vector Database**: Custom local Vector Database implemented via **SQLite** and **NumPy** for native compatibility. Bypasses Windows C++ binary build compilation traps typical of FAISS/ChromaDB.
-*   **LLM Core**: Dual-provider client supporting **Google Gemini API** (using `google-generativeai`) and **OpenAI API**, with a self-contained **simulation fallback engine** for zero-setup sandboxes.
+*   **LLM Core**: Dual-provider client supporting **Google Gemini API** (using `google-generativeai`) and **OpenAI API**, with a self-contained **multi-niche simulation fallback engine** covering 6 industry verticals for zero-setup sandboxes.
 *   **Embedding Engines**: High-performance local text projection vectorizers combined with OpenAI and Gemini embedding endpoints.
 *   **Search Providers**: Tavily Search API with DuckDuckGo Search fail-safes.
 
@@ -52,7 +54,7 @@ graph TD
 *   **Design System**: Custom CSS variables, glassmorphic filters (`backdrop-filter: blur(12px)`), glow-border panels, and floating animations.
 *   **Agent Visualizer**: Dynamic SVG graph charting agent nodes (Researcher, Critic, Writer) that glow, pulse, and animate data flows as live actions run.
 *   **Streaming UI**: Native readable-stream consumer consuming POST Server-Sent Events dynamically.
-*   **Briefing Center**: Built-in Markdown-to-HTML parser rendering complex briefings, blockquotes, code-blocks, and tables without external dependency overhead.
+*   **Briefing Center**: Built-in Markdown-to-HTML parser rendering complex briefings, blockquotes, code-blocks, ordered lists, and tables without external dependency overhead.
 
 ---
 
@@ -75,7 +77,8 @@ graph TD
 │   │   ├── config.py        # Settings and file schema
 │   │   └── main.py          # FastAPI application & SSE endpoints
 │   ├── tests/
-│   │   └── verify_agents.py # Synchronous pipeline verification script
+│   │   ├── verify_agents.py      # Synchronous pipeline verification script
+│   │   └── test_ev_pipeline.py   # EV/Automotive niche validation test
 │   └── requirements.txt     # Python dependencies
 ├── frontend/
 │   ├── src/
@@ -150,7 +153,18 @@ Open your browser to `http://localhost:5173/`.
 
 ## ⚙️ Configuration & Key Storage
 
-The system executes in a fully-featured **Local Simulation Sandbox** out-of-the-box if no keys are provided.
+The system executes in a fully-featured **Local Simulation Sandbox** out-of-the-box if no keys are provided. The simulation engine includes high-fidelity, competitor-specific intelligence for the following industry verticals:
+
+| Vertical | Example Competitors | Key Topics |
+|---|---|---|
+| **Fashion & Luxury** | Hugo Boss, Tommy Hilfiger, Dior | Smart accessories, AR try-on, NFC authenticity, VIP programs |
+| **Automotive & EV** | Tesla, BMW Group, Hyundai & Kia, Ola Electric | FSD neural nets, 800V charging, cylindrical cells, V2L |
+| **Finance & Fintech** | Any | Automated rebalancing, multi-currency wallets, zero-fee subscriptions |
+| **Healthcare & Biotech** | Any | Telehealth IoT, AI diagnostic screening, outcome-based care |
+| **Software & AI** | Cursor, Windsurf, GitHub Copilot | Inline refactoring, sandboxed execution, enterprise fine-tuning |
+| **Generic Corporate** | Any | Premium service tiers, regional fulfillment, flat-rate pricing |
+
+If the web crawler returns **zero results**, the system generates a professional **Technical Diagnostic Briefing** with scraper status, ingestion metrics, and actionable recommendations instead of fabricating data.
 
 To upgrade to live web crawling and generation:
 1.  Navigate to the **Credentials Config** tab in the dashboard.
