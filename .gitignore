@@ -1,0 +1,39 @@
+# Python virtual environment
+backend/venv/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node modules & frontend builds
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# SQLite Vector Databases & Local User settings (API Keys)
+backend/data/db/
+backend/data/settings.json
+backend/data/reports/
+data/
+
+# Environment files and API keys
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
