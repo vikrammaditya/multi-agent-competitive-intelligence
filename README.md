@@ -21,7 +21,7 @@ graph TD
     Writer -->|9. Save Document| FinalReport["Final Markdown Briefing (.md)"]
     
     %% Right Column: User Dashboard & Storage (Linear Downward)
-    Orchestrator -->|10. Stream Live Logs (SSE)| Frontend["React Dashboard"]
+    Orchestrator -->|10. Stream Live Logs SSE| Frontend["React Dashboard"]
     Frontend -->|11. Semantic Query| VectorStore[("SQLite Vector Store")]
     Frontend -->|12. View / Export| ReportsFolder["Reports Archive"]
     
