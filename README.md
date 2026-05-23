@@ -12,24 +12,24 @@ Features a responsive, **glassmorphism dark-space React dashboard** displaying a
 graph TD
     User(["User Form"]) -->|1. Submit Niche & Competitors| Orchestrator["Agent Orchestrator"]
     
-    subgraph loop ["Multi-Agent Event Loop (SSE Streaming)"]
-        Orchestrator -->|2. Delegate Task| Researcher["Researcher Agent"]
-        Researcher -->|3. Web Search / Scrape| SearchTool["Search Utils (Tavily / DuckDuckGo)"]
-        SearchTool -->|4. Raw Snippets| Researcher
-        Researcher -->|5. Draft Bullet Findings| Critic["Critic / Fact-Checker Agent"]
-        
-        Critic -->|6. Query Embeddings| VectorStore[("SQLite Vector Store")]
-        VectorStore -->|7. Deduplicate & Verify| Critic
-        Critic -->|8. Save Verified Facts| VectorStore
-        Critic -->|9. Verified Fact Sheet| Writer["Writer Agent"]
-        
-        Writer -->|10. Technical-to-Value Mapping| Writer
-        Writer -->|11. Compile Markdown Briefing| Orchestrator
+    Orchestrator -->|2. Delegate Task| Researcher["Researcher Agent"]
+    
+    subgraph pipeline ["Multi-Agent Collaboration Pipeline"]
+        Researcher -->|5. Draft Findings| Critic["Critic / Fact-Checker Agent"]
+        Critic -->|8. Verified Fact Sheet| Writer["Writer Agent"]
     end
     
-    Orchestrator -->|12. Real-Time SSE Stream| Frontend["React Dashboard"]
-    Frontend -->|Query Facts| VectorStore
-    Frontend -->|View / Export Reports| ReportsFolder["Reports Archive"]
+    Researcher -->|3. Web Crawling| SearchTool["Search Utils (Tavily/DuckDuckGo)"]
+    SearchTool -->|4. Raw Snippets| Researcher
+    
+    Critic -->|6. Query Embeddings| VectorStore[("SQLite Vector Store")]
+    VectorStore -->|7. Deduplicate & Save| Critic
+    
+    Writer -->|9. Compile Markdown Briefing| Orchestrator
+    
+    Orchestrator -->|10. Real-Time SSE Stream| Frontend["React Dashboard"]
+    Frontend -->|11. Query Facts| VectorStore
+    Frontend -->|12. View / Export Reports| ReportsFolder["Reports Archive"]
 ```
 
 ### 🤖 The Agent Team
