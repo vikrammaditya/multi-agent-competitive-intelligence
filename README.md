@@ -10,26 +10,26 @@ Features a responsive, **glassmorphism dark-space React dashboard** displaying a
 
 ```mermaid
 graph TD
-    User([User Form]) -->|1. Submit Niche & Competitors| Orchestrator[Agent Orchestrator]
+    User(["User Form"]) -->|1. Submit Niche & Competitors| Orchestrator["Agent Orchestrator"]
     
-    subgraph Multi-Agent Event Loop (SSE Streaming)
-        Orchestrator -->|2. Delegate Task| Researcher[Researcher Agent]
-        Researcher -->|3. Web Search / Scrape| SearchTool[Search Utils (Tavily / DuckDuckGo)]
+    subgraph loop ["Multi-Agent Event Loop (SSE Streaming)"]
+        Orchestrator -->|2. Delegate Task| Researcher["Researcher Agent"]
+        Researcher -->|3. Web Search / Scrape| SearchTool["Search Utils (Tavily / DuckDuckGo)"]
         SearchTool -->|4. Raw Snippets| Researcher
-        Researcher -->|5. Draft Bullet Findings| Critic[Critic / Fact-Checker Agent]
+        Researcher -->|5. Draft Bullet Findings| Critic["Critic / Fact-Checker Agent"]
         
-        Critic -->|6. Query Embeddings| VectorStore[(SQLite Vector Store)]
+        Critic -->|6. Query Embeddings| VectorStore[("SQLite Vector Store")]
         VectorStore -->|7. Deduplicate & Verify| Critic
         Critic -->|8. Save Verified Facts| VectorStore
-        Critic -->|9. Verified Fact Sheet| Writer[Writer Agent]
+        Critic -->|9. Verified Fact Sheet| Writer["Writer Agent"]
         
         Writer -->|10. Technical-to-Value Mapping| Writer
         Writer -->|11. Compile Markdown Briefing| Orchestrator
     end
     
-    Orchestrator -->|12. Real-Time SSE Stream| Frontend[React Dashboard]
+    Orchestrator -->|12. Real-Time SSE Stream| Frontend["React Dashboard"]
     Frontend -->|Query Facts| VectorStore
-    Frontend -->|View / Export Reports| ReportsFolder[(Reports Archive)]
+    Frontend -->|View / Export Reports| ReportsFolder["Reports Archive"]
 ```
 
 ### 🤖 The Agent Team
