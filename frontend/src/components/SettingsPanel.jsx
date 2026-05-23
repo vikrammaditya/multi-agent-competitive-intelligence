@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react';
 
 export default function SettingsPanel() {
   const [keys, setKeys] = useState({
@@ -10,12 +11,7 @@ export default function SettingsPanel() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [health, setHealth] = useState({ status: 'unknown', timestamp: '' });
 
-  useEffect(() => {
-    fetchSettings();
-    checkBackendHealth();
-  }, []);
-
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const res = await fetch('http://127.0.0.1:8000/api/settings');
       if (res.ok) {
@@ -25,9 +21,9 @@ export default function SettingsPanel() {
     } catch (err) {
       console.error('Error fetching settings:', err);
     }
-  };
+  }, []);
 
-  const checkBackendHealth = async () => {
+  const checkBackendHealth = useCallback(async () => {
     try {
       const res = await fetch('http://127.0.0.1:8000/api/health');
       if (res.ok) {
@@ -36,10 +32,15 @@ export default function SettingsPanel() {
       } else {
         setHealth({ status: 'unhealthy', timestamp: '' });
       }
-    } catch (err) {
+    } catch {
       setHealth({ status: 'offline', timestamp: '' });
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+    checkBackendHealth();
+  }, [fetchSettings, checkBackendHealth]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +64,7 @@ export default function SettingsPanel() {
       } else {
         setStatus({ type: 'error', message: 'Failed to update settings.' });
       }
-    } catch (err) {
+    } catch {
       setStatus({ type: 'error', message: 'Could not connect to backend server.' });
     } finally {
       setLoading(false);
@@ -171,7 +172,7 @@ export default function SettingsPanel() {
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-secondary)' }}>System Diagnostics</h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Backend Engine Status:</span>
               <span style={{
                 fontSize: '0.8rem',

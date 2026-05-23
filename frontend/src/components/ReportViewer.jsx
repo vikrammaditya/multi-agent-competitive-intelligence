@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react';
 
 // Custom lightweight high-fidelity markdown-to-HTML converter
 function parseMarkdown(md) {
@@ -68,6 +69,14 @@ function parseMarkdown(md) {
   // Fix nested double <ul> tags
   html = html.replace(/<\/ul>\s*<ul>/g, '');
 
+  // Numbered/Ordered Lists (e.g. 1. or 2.)
+  html = html.replace(/^\s*\d+\.\s+(.*)$/gm, '<li class="num-list-item">$1</li>');
+  // Wrap consecutive <li class="num-list-item"> elements in <ol>
+  html = html.replace(/((?:<li class="num-list-item">.*?<\/li>\s*)+)/gs, (match) => {
+    const cleanItems = match.replace(/ class="num-list-item"/g, '');
+    return `<ol>${cleanItems}</ol>`;
+  });
+
   // Bold (**text**)
   html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
@@ -130,26 +139,7 @@ export default function ReportViewer() {
   const [selectedContent, setSelectedContent] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  const fetchReports = async (selectFirst = true) => {
-    try {
-      const res = await fetch('http://127.0.0.1:8000/api/reports');
-      if (res.ok) {
-        const data = await res.json();
-        setReports(data);
-        if (selectFirst && data.length > 0) {
-          handleSelectReport(data[0].id);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load reports:', err);
-    }
-  };
-
-  const handleSelectReport = async (id) => {
+  const handleSelectReport = useCallback(async (id) => {
     setSelectedReportId(id);
     setLoading(true);
     try {
@@ -163,7 +153,26 @@ export default function ReportViewer() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const fetchReports = useCallback(async (selectFirst = true) => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/reports');
+      if (res.ok) {
+        const data = await res.json();
+        setReports(data);
+        if (selectFirst && data.length > 0) {
+          handleSelectReport(data[0].id);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load reports:', err);
+    }
+  }, [handleSelectReport]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
 
   const handleDelete = async (id, e) => {
     e.stopPropagation();

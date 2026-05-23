@@ -1,5 +1,6 @@
 import json
 import sqlite3
+import contextlib
 import numpy as np
 from datetime import datetime
 from pathlib import Path
@@ -10,11 +11,16 @@ class SQLiteVectorStore:
         self.db_path = db_path
         self._init_db()
 
-    def _get_connection(self):
-        return sqlite3.connect(self.db_path)
+    @contextlib.contextmanager
+    def _connection(self):
+        conn = sqlite3.connect(self.db_path)
+        try:
+            yield conn
+        finally:
+            conn.close()
 
     def _init_db(self):
-        with self._get_connection() as conn:
+        with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS facts (
@@ -36,7 +42,7 @@ class SQLiteVectorStore:
         embedding_json = json.dumps(embedding)
         timestamp = datetime.now().isoformat()
         
-        with self._get_connection() as conn:
+        with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT OR REPLACE INTO facts 
@@ -47,7 +53,7 @@ class SQLiteVectorStore:
 
     def get_all_facts(self) -> list[dict]:
         """Retrieves all stored facts with metadata."""
-        with self._get_connection() as conn:
+        with self._connection() as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT id, content, competitor, category, source_url, timestamp, confidence FROM facts ORDER BY timestamp DESC")
@@ -56,7 +62,7 @@ class SQLiteVectorStore:
 
     def clear_database(self):
         """Clears all entries in the database."""
-        with self._get_connection() as conn:
+        with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM facts")
             conn.commit()
@@ -75,7 +81,7 @@ class SQLiteVectorStore:
             return []
 
         results = []
-        with self._get_connection() as conn:
+        with self._connection() as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT id, content, competitor, category, source_url, timestamp, confidence, embedding FROM facts")

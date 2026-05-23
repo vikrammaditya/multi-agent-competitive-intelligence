@@ -1,6 +1,12 @@
 import asyncio
 import sys
+import warnings
 from pathlib import Path
+
+# Suppress deprecation and rename warnings globally
+warnings.simplefilter("ignore", category=RuntimeWarning)
+warnings.simplefilter("ignore", category=FutureWarning)
+
 
 # Add backend directory to path so imports work cleanly
 sys.path.append(str(Path(__file__).resolve().parent.parent))

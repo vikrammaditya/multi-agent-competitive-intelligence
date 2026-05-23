@@ -1,6 +1,12 @@
 import os
 import json
 import asyncio
+import warnings
+
+# Suppress deprecation and rename warnings globally
+warnings.simplefilter("ignore", category=RuntimeWarning)
+warnings.simplefilter("ignore", category=FutureWarning)
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse

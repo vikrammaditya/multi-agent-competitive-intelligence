@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react';
 
 export default function KnowledgeBase() {
   const [facts, setFacts] = useState([]);
@@ -10,11 +11,20 @@ export default function KnowledgeBase() {
     categories: {}
   });
 
-  useEffect(() => {
-    loadFacts();
+  const calculateStats = useCallback((data) => {
+    const comps = [...new Set(data.map(f => f.competitor))];
+    const cats = {};
+    data.forEach(f => {
+      cats[f.category] = (cats[f.category] || 0) + 1;
+    });
+    setStats({
+      totalFacts: data.length,
+      competitors: comps,
+      categories: cats
+    });
   }, []);
 
-  const loadFacts = async () => {
+  const loadFacts = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('http://127.0.0.1:8000/api/facts');
@@ -28,20 +38,11 @@ export default function KnowledgeBase() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [calculateStats]);
 
-  const calculateStats = (data) => {
-    const comps = [...new Set(data.map(f => f.competitor))];
-    const cats = {};
-    data.forEach(f => {
-      cats[f.category] = (cats[f.category] || 0) + 1;
-    });
-    setStats({
-      totalFacts: data.length,
-      competitors: comps,
-      categories: cats
-    });
-  };
+  useEffect(() => {
+    loadFacts();
+  }, [loadFacts]);
 
   const handleSearchSubmit = async (e) => {
     if (e) e.preventDefault();

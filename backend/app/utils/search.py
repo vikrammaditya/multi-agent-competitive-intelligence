@@ -1,7 +1,19 @@
+import warnings
+
+# Suppress the duckduckgo_search package rename RuntimeWarning
+_original_showwarning = warnings.showwarning
+def _custom_showwarning(message, category, filename, lineno, *args, **kwargs):
+    if "duckduckgo_search" in str(message) or "ddgs" in str(message):
+        return
+    return _original_showwarning(message, category, filename, lineno, *args, **kwargs)
+warnings.showwarning = _custom_showwarning
+
 import os
 import requests
 from duckduckgo_search import DDGS
 from app.config import TAVILY_API_KEY
+
+
 
 def search_web(query: str, max_results: int = 5) -> list[dict]:
     """

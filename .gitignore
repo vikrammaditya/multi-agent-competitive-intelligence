@@ -30,6 +30,9 @@ data/
 *.key
 *.pem
 
+# Root-level stray files
+package-lock.json
+
 # IDEs & System files
 .vscode/
 .idea/

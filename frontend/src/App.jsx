@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AgentDashboard from './components/AgentDashboard';
 import ReportViewer from './components/ReportViewer';
 import KnowledgeBase from './components/KnowledgeBase';
