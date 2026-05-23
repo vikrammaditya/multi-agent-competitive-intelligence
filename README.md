@@ -11,20 +11,17 @@ Features a responsive, **glassmorphism dark-space React dashboard** displaying a
 ```mermaid
 graph TD
     User(["User Form"]) -->|1. Submit Niche & Competitors| Orchestrator["Agent Orchestrator"]
-    
     Orchestrator -->|2. Delegate Task| Researcher["Researcher Agent"]
-    
-    subgraph pipeline ["Multi-Agent Collaboration Pipeline"]
-        Researcher -->|5. Draft Findings| Critic["Critic / Fact-Checker Agent"]
-        Critic -->|8. Verified Fact Sheet| Writer["Writer Agent"]
-    end
     
     Researcher -->|3. Web Crawling| SearchTool["Search Utils (Tavily/DuckDuckGo)"]
     SearchTool -->|4. Raw Snippets| Researcher
     
+    Researcher -->|5. Draft Findings| Critic["Critic / Fact-Checker Agent"]
+    
     Critic -->|6. Query Embeddings| VectorStore[("SQLite Vector Store")]
     VectorStore -->|7. Deduplicate & Save| Critic
     
+    Critic -->|8. Verified Fact Sheet| Writer["Writer Agent"]
     Writer -->|9. Compile Markdown Briefing| Orchestrator
     
     Orchestrator -->|10. Real-Time SSE Stream| Frontend["React Dashboard"]
